@@ -1,0 +1,32 @@
+name: Cache Workflow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip dependencies
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: cache-bb67ddb
+          restore-keys: |
+            cache-bb67ddb
+
+      - name: prime-cache-bb67ddb
+        run: echo "Cache hit = ${{ steps.cache-deps.outputs.cache-hit }}"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
